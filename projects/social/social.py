@@ -1,3 +1,6 @@
+import random
+from util import Queue
+
 class User:
     def __init__(self, name):
         self.name = name
@@ -28,6 +31,11 @@ class SocialGraph:
         self.users[self.last_id] = User(name)
         self.friendships[self.last_id] = set()
 
+    def fisher_yates_shuffle(self, l):
+        for i in range(0, len(l)):
+            random_index = random.randint(i, len(l) - 1)
+            l[random_index], l[i] = l[i], l[random_index]
+
     def populate_graph(self, num_users, avg_friendships):
         """
         Takes a number of users and an average number of friendships
@@ -44,9 +52,27 @@ class SocialGraph:
         self.friendships = {}
         # !!!! IMPLEMENT ME
 
+        for user in range(num_users):
+            self.add_user(user)
+
         # Add users
 
         # Create friendships
+        friendships = []
+
+        for user in range(1, self.last_id + 1):
+            for friend in range(user + 1, num_users + 1):
+                friendship = (user, friend)
+                friendships.append(friendship)
+
+        self.fisher_yates_shuffle(friendships)
+
+        total_friendships = num_users * avg_friendships
+
+        random_friendships = friendships[:total_friendships//2]
+
+        for friendship in random_friendships:
+            self.add_friendship(friendship[0], friendship[1])
 
     def get_all_social_paths(self, user_id):
         """
@@ -57,8 +83,24 @@ class SocialGraph:
 
         The key is the friend's ID and the value is the path.
         """
-        visited = {}  # Note that this is a dictionary, not a set
-        # !!!! IMPLEMENT ME
+        visited = {}
+        q = Queue()
+        q.enqueue([user_id])
+
+        while q.size() > 0:
+            path = q.dequeue()
+            ln = path[-1]
+
+            if ln not in visited:
+                visited[ln] = path
+
+                for n in self.friendships[ln]:
+                    new_path = list(path)
+                    new_path.append(n)
+                    q.enqueue(new_path)
+
+        # print(self.friendships.values())
+
         return visited
 
 
