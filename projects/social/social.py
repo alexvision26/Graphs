@@ -1,5 +1,6 @@
 import random
 from util import Queue
+import time
 
 class User:
     def __init__(self, name):
@@ -16,12 +17,15 @@ class SocialGraph:
         Creates a bi-directional friendship
         """
         if user_id == friend_id:
+            return False
             print("WARNING: You cannot be friends with yourself")
         elif friend_id in self.friendships[user_id] or user_id in self.friendships[friend_id]:
+            return False
             print("WARNING: Friendship already exists")
         else:
             self.friendships[user_id].add(friend_id)
             self.friendships[friend_id].add(user_id)
+            return True
 
     def add_user(self, name):
         """
@@ -74,6 +78,29 @@ class SocialGraph:
         for friendship in random_friendships:
             self.add_friendship(friendship[0], friendship[1])
 
+    def linear_populate_graph(self, num_users, avg_friendships):
+        self.last_id = 0
+        self.users = {}
+        self.friendships = {}
+        # !!!! IMPLEMENT ME
+
+        for user in range(num_users):
+            self.add_user(user)
+
+        target_num_friendships = num_users * avg_friendships
+
+        friendships_created = 0
+
+        while friendships_created < target_num_friendships:
+
+            friend_one = random.randint(1, self.last_id)
+            friend_two = random.randint(1, self.last_id)
+
+            friendship_was_made = self.add_friendship(friend_one, friend_two)
+
+            if friendship_was_made:
+                friendships_created += 2
+
     def get_all_social_paths(self, user_id):
         """
         Takes a user's user_id as an argument
@@ -106,7 +133,21 @@ class SocialGraph:
 
 if __name__ == '__main__':
     sg = SocialGraph()
-    sg.populate_graph(10, 2)
-    print(sg.friendships)
-    connections = sg.get_all_social_paths(1)
-    print(connections)
+
+    start_time = time.time()
+    sg.populate_graph(1000, 2)
+    end_time = time.time()
+
+    print(f"Populate graph O_n^2): {end_time - start_time}")
+
+    start_time = time.time()
+    sg.linear_populate_graph(1000, 5)
+    end_time = time.time()
+
+    print(f"Populate graph O_n^2): {end_time - start_time}")
+
+    print('finished again!')
+
+    # print(sg.friendships)
+    # connections = sg.get_all_social_paths(1)
+    # print(connections)

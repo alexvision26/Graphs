@@ -58,3 +58,5 @@ Note that in this sample, Users 3, 4 and 9 are not in User 1's extended social n
 
 2. If you followed the hints for part 1, your `populate_graph()` will run in O(n^2) time. Refactor your code to run in O(n) time. Are there any tradeoffs that come with this implementation?
 
+Yes, the more densely populated the graph is, the slower the linear time takes to run, while the original O(n^2) remained almost the same
+
