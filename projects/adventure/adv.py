@@ -1,6 +1,7 @@
 from room import Room
 from player import Player
 from world import World
+from util import Queue, Stack
 
 import random
 from ast import literal_eval
@@ -13,8 +14,8 @@ world = World()
 # map_file = "maps/test_line.txt"
 # map_file = "maps/test_cross.txt"
 # map_file = "maps/test_loop.txt"
-# map_file = "maps/test_loop_fork.txt"
-map_file = "maps/main_maze.txt"
+map_file = "maps/test_loop_fork.txt"
+# map_file = "maps/main_maze.txt"
 
 # Loads the map into a dictionary
 room_graph=literal_eval(open(map_file, "r").read())
@@ -29,7 +30,39 @@ player = Player(world.starting_room)
 # traversal_path = ['n', 'n']
 traversal_path = []
 
+s = Stack()
 
+s.push(0)
+
+visited = set()
+
+while len(visited) < len(room_graph):
+    next_move = Stack()
+    current_room = s.stack[-1]
+    print(current_room)
+    visited.add(current_room)
+
+    poss_dir = room_graph[current_room][1]
+    # print(poss_dir)
+
+    for direction, next_room in poss_dir.items():
+        # print("direction", direction, 'next room', next_room)
+        if next_room not in visited:
+            next_move.push(next_room)
+
+    if next_move.size() > 0:
+        room = next_move.stack[0]
+        s.push(room)
+    else:
+        room = s.stack[-2]
+        s.pop()
+
+    for direction, next_room in poss_dir.items():
+        if next_room == room:
+            traversal_path.append(direction)
+
+
+print(traversal_path)
 
 # TRAVERSAL TEST
 visited_rooms = set()
@@ -45,7 +78,6 @@ if len(visited_rooms) == len(room_graph):
 else:
     print("TESTS FAILED: INCOMPLETE TRAVERSAL")
     print(f"{len(room_graph) - len(visited_rooms)} unvisited rooms")
-
 
 
 #######

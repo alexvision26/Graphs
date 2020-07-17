@@ -1,3 +1,13 @@
+After reaching a room with no unexplored nodes, backtrack to find a room with unexplored nodes'
+
+find the nearest unexplored exit
+
+
+Graph Terminology
+Nodes: rooms
+Edges: Exits
+
+
 ## Description
 
 You are provided with a pre-generated graph consisting of 500 rooms. You are responsible for filling `traversal_path` with directions that, when walked in order, will visit every room on the map at least once.
