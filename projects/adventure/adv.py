@@ -13,8 +13,8 @@ world = World()
 # You may uncomment the smaller graphs for development and testing purposes.
 # map_file = "maps/test_line.txt"
 # map_file = "maps/test_cross.txt"
-# map_file = "maps/test_loop.txt"
-map_file = "maps/test_loop_fork.txt"
+map_file = "maps/test_loop.txt"
+# map_file = "maps/test_loop_fork.txt"
 # map_file = "maps/main_maze.txt"
 
 # Loads the map into a dictionary
@@ -30,37 +30,43 @@ player = Player(world.starting_room)
 # traversal_path = ['n', 'n']
 traversal_path = []
 
-s = Stack()
+def traverse_rooms(graph, starting_node):
+    s = Stack()
 
-s.push(0)
+    s.push(starting_node)
 
-visited = set()
+    travel_path = []
 
-while len(visited) < len(room_graph):
-    next_move = Stack()
-    current_room = s.stack[-1]
-    print(current_room)
-    visited.add(current_room)
+    visited = set()
 
-    poss_dir = room_graph[current_room][1]
-    # print(poss_dir)
+    while len(visited) < len(graph):
+        next_move = Stack()
+        current = s.stack[-1]
+        visited.add(current)
 
-    for direction, next_room in poss_dir.items():
-        # print("direction", direction, 'next room', next_room)
-        if next_room not in visited:
-            next_move.push(next_room)
+        poss_dir = graph[current][1]
+        # print(poss_dir)
 
-    if next_move.size() > 0:
-        room = next_move.stack[0]
-        s.push(room)
-    else:
-        room = s.stack[-2]
-        s.pop()
+        for direction, next_room in poss_dir.items():
+            # print(direction, next_room)
+            if next_room not in visited:
+                next_move.push(next_room)
 
-    for direction, next_room in poss_dir.items():
-        if next_room == room:
-            traversal_path.append(direction)
+        if next_move.size() > 0:
+            room = next_move.stack[0]
+            s.push(room)
+        else:
+            room = s.stack[-2]
+            s.pop()
 
+        for direction, next_room in poss_dir.items():
+            if next_room == room:
+                travel_path.append(direction)
+
+    # print(travel_path)
+    return travel_path
+
+traversal_path = traversal_path + traverse_rooms(room_graph, 0)
 
 print(traversal_path)
 
